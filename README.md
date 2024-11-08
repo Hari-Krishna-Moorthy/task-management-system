@@ -318,11 +318,6 @@ make docker-build
 make docker-run
 ```
 
-##### To verify MongoDB Atlas connectivity, use:
-```bash
-make check-db
-```
-
 ##### To clean up generated files such as coverage reports:
 ```bash
 make clean
