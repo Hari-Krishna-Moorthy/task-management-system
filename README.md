@@ -264,3 +264,68 @@ end
     - Test for successful task deletion.
     - Test for deleting a task that doesn’t exist.
     - Test for unauthorized access.
+  
+### 8. Error Handling
+
+- **Error Codes**: Standard HTTP status codes are used for errors.
+- **Error Messages**: Custom error messages are provided to assist in debugging.
+
+### 9. Environment Variables
+
+Create a `.env` file with the following configuration:
+```env
+MONGODB_URI="your-mongodb-atlas-uri"
+JWT_SECRET="your-jwt-secret-key"
+```
+
+### 10. Dev environment setup
+
+##### Prerequisites
+- Golang (v1.17 or later recommended)
+- Docker (for containerized deployment)
+- MongoDB Atlas (setup with connection credentials)
+- Git (for version control)
+- Environment Variables: The .env file should be created as per instructions in the Environment Variables section.
+
+##### Install Dependencies
+```bash
+make setup
+```
+
+##### Run Tests
+```bash
+make test
+```
+
+##### Generate Test Coverage Report
+```bash
+make test-report
+```
+
+##### Run Locally
+```bash
+make run
+```
+
+##### Run in Docker
+###### Build the Docker image:
+```bash
+make docker-build
+```
+
+###### Run the Docker container:
+```bash
+make docker-run
+```
+
+##### To verify MongoDB Atlas connectivity, use:
+```bash
+make check-db
+```
+
+##### To clean up generated files such as coverage reports:
+```bash
+make clean
+```
+
+
