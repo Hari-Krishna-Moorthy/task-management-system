@@ -220,3 +220,47 @@ end
 
 ```
 
+#### 7. Unit Test Cases
+
+##### User Management Endpoints
+
+- **POST `/signup`**
+    
+    - Test for successful user registration.
+    - Test for duplicate username registration.
+    - Test for missing or invalid fields in the request body.
+- **POST `/signin`**
+    
+    - Test for successful authentication and token generation.
+    - Test for incorrect username or password.
+    - Test for missing fields in the request.
+- **POST `/signout`**
+    
+    - Test for successful token invalidation.
+
+##### Task Management Endpoints
+
+- **POST `/tasks`**
+    
+    - Test for successful task creation.
+    - Test for creating a task with missing or invalid fields.
+    - Test for unauthorized access without a valid JWT.
+- **GET `/tasks`**
+    
+    - Test for retrieving all tasks for the authenticated user.
+    - Test for unauthorized access without a valid JWT.
+- **GET `/tasks/:id`**
+    
+    - Test for retrieving a specific task by ID.
+    - Test for retrieving a task that doesn’t exist.
+    - Test for unauthorized access.
+- **PUT `/tasks/:id`**
+    
+    - Test for successful task update.
+    - Test for updating a task that doesn’t exist.
+    - Test for unauthorized access.
+- **DELETE `/tasks/:id`**
+    
+    - Test for successful task deletion.
+    - Test for deleting a task that doesn’t exist.
+    - Test for unauthorized access.
