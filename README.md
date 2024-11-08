@@ -33,3 +33,35 @@ erDiagram
 
     USER ||--o{ TASK : "owns"
 ```
+
+### 3. API Endpoints
+
+#### User Management Endpoints
+
+- **POST `/signup`**
+    
+    - **Description**: Registers a new user.
+- **POST `/signin`**
+    
+    - **Description**: Authenticates a user and generates a JWT token.
+- **POST `/signout`**
+    
+    - **Description**: Invalidates the user's JWT token.
+
+#### Task Management Endpoints
+
+- **POST `/tasks`**
+    
+    - **Description**: Creates a new task.
+- **GET `/tasks`**
+    
+    - **Description**: Retrieves all tasks for the authenticated user.
+- **GET `/tasks/:id`**
+    
+    - **Description**: Retrieves a specific task by ID.
+- **PUT `/tasks/:id`**
+    
+    - **Description**: Updates a task by ID.
+- **DELETE `/tasks/:id`**
+    
+    - **Description**: Deletes a task by ID.
