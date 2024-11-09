@@ -1,0 +1,12 @@
+linters-settings:
+  exclude:
+    - '.*_test.go'          # Skip all test files
+    - '.*testutils.*'        # Skip test utilities files
+    - '.*mock.*'             # Skip files with mocks
+
+linters:
+    enable:
+      - gocritic
+      - errcheck
+    disable:
+      - golint
