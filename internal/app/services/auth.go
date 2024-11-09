@@ -17,7 +17,7 @@ import (
 )
 
 type AuthService struct {
-	authRepo  *AuthRepository
+	authRepo  AuthRepositoryInterface
 	validator *validator.Validate
 }
 
@@ -29,9 +29,9 @@ type AuthServiceInterface interface {
 	SignOut(c *fiber.Ctx) error
 }
 
-var authService *AuthService
+var authService AuthServiceInterface
 
-func InitializeAuthService(ctx context.Context, database *mongo.Database) *AuthService {
+func InitializeAuthService(ctx context.Context, database *mongo.Database) AuthServiceInterface {
 	log.Println("Initializing AuthService")
 	if len(jwtSecret) == 0 {
 		jwtSecret = []byte(utils.JWT_DEFAULT_SECRET)
@@ -44,7 +44,7 @@ func InitializeAuthService(ctx context.Context, database *mongo.Database) *AuthS
 	}
 }
 
-func GetAuthService(ctx context.Context, database *mongo.Database) *AuthService {
+func GetAuthService(ctx context.Context, database *mongo.Database) AuthServiceInterface {
 	log.Println("Retrieving AuthService")
 	if authService == nil {
 		log.Println("AuthService not initialized, calling InitializeAuthService")

@@ -20,15 +20,23 @@ type AuthRepository struct {
 	authCollections *mongo.Collection
 }
 
-var authRepository *AuthRepository
-
-func NewAuthRepository(database *mongo.Database) *AuthRepository {
-	return &AuthRepository{
-		authCollections: database.Collection((&models.User{}).GetCollectionsName()),
-	}
+type AuthRepositoryInterface interface {
+	FindUserByEmail(ctx context.Context, email string) (*models.User, error)
+	FindUserByUsername(ctx context.Context, username string) (*models.User, error)
+	FindUserByID(ctx context.Context, id string) (*models.User, error)
+	CreateUser(ctx context.Context, user *models.User) error
+	UpdateUser(ctx context.Context, user *models.User) error
+	DeleteUser(ctx context.Context, id string) error
 }
 
-func GetAuthRepository(database *mongo.Database) *AuthRepository {
+var authRepository AuthRepositoryInterface
+
+func NewAuthRepository(database *mongo.Database) AuthRepositoryInterface {
+	return &AuthRepository{
+		authCollections: database.Collection((&models.User{}).GetCollectionsName())}
+}
+
+func GetAuthRepository(database *mongo.Database) AuthRepositoryInterface {
 	if authRepository == nil {
 		authRepository = NewAuthRepository(database)
 	}
