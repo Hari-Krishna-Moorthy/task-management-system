@@ -1,0 +1,72 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    env:
+      GO111MODULE: "on"
+      COVERAGE_THRESHOLD: 80
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.22.7
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Install MongoDB
+        run: |
+          echo "Installing MongoDB..."
+          sudo apt-get update
+          sudo apt-get install -y gnupg
+          wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
+          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-org
+          sudo systemctl start mongod
+          sudo systemctl status mongod
+
+      - name: Run setup to seed test data
+        env:
+          TEST_DB_URI: "mongodb://localhost:27017/test_db_name"  # Point to local MongoDB
+        run: make setup
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.54.2  # Adjust to the latest version if needed
+          args: "--timeout 5m"
+
+      - name: Run tests and generate coverage report
+        env:
+          TEST_DB_URI: "mongodb://localhost:27017/test_db_name"  # Ensure tests use the local MongoDB instance
+        run: |
+          make test
+          make test-report
+
+      - name: Display coverage results
+        run: go tool cover -func=coverage.out
+
+      - name: Enforce coverage threshold
+        id: coverage
+        run: |
+          COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print substr($3, 1, length($3)-1)}')
+          echo "Current coverage is $COVERAGE%"
+          COVERAGE_THRESHOLD=${{ env.COVERAGE_THRESHOLD }}
+          if (( $(echo "$COVERAGE < $COVERAGE_THRESHOLD" | bc -l) )); then
+            echo "Code coverage is below ${COVERAGE_THRESHOLD}%. Current coverage is $COVERAGE%"
+            exit 1
+          fi
+        shell: bash

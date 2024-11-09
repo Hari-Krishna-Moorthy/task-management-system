@@ -1,7 +1,7 @@
 # Variables
 APP_NAME := task-management-system
-MAIN_DB_URI := $(shell grep MAIN_DB_URI .env )
-TEST_DB_URI := $(shell grep TEST_DB_URI .env )
+MAIN_DB_URI := $(shell grep MAIN_DB_URI .env | sed 's/MAIN_DB_URI=//')
+TEST_DB_URI := $(shell grep TEST_DB_URI .env | sed 's/TEST_DB_URI=//')
 
 # Go build and test commands
 GO_CMD := go
@@ -13,17 +13,17 @@ DOCKER_CMD := docker
 setup: 
 	@echo "Setting up the project..."
 	@$(GO_CMD) mod tidy
-	@# Add additional setup commands if needed
+
 
 # Run tests using the test database configuration
 test: 
 	@echo "Running tests with test database..."
-	@MAIN_DB_URI=$(TEST_DB_URI) $(GO_CMD) test ./... -v
+	@MAIN_DB_URI=$(TEST_DB_URI) $(GO_CMD) test ./internal/app/test/... -v
 
 # Run tests and generate a coverage report
 test-report:
 	@echo "Running tests and generating coverage report..."
-	@MAIN_DB_URI=$(TEST_DB_URI) $(GO_CMD) test ./... -coverprofile=coverage.out
+	@MAIN_DB_URI=$(TEST_DB_URI) $(GO_CMD) test ./internal/app/test/... -coverprofile=coverage.out
 	@$(GO_CMD) tool cover -html=coverage.out -o coverage.html
 	@echo "Coverage report generated at coverage.html"
 
