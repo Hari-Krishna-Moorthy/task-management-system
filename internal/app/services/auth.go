@@ -21,7 +21,7 @@ type AuthService struct {
 	validator *validator.Validate
 }
 
-var jwtSecret = []byte("")
+var jwtSecret = []byte(config.GetConfig().Auth.JWTSecret)
 
 type AuthServiceInterface interface {
 	SignUp(c *fiber.Ctx, req *types.SignUpRequest) error
@@ -84,7 +84,6 @@ func (authService *AuthService) SignUp(c *fiber.Ctx, req *types.SignUpRequest) e
 	err := authService.validator.Struct(req)
 	if err != nil {
 		validateionErrors := helpers.FormateValidationError(err)
-		log.Printf("Validation errors: %v", validateionErrors)
 
 		if len(validateionErrors) > utils.NumbeZero {
 			return c.Status(fiber.StatusNotFound).JSON(validateionErrors)
@@ -125,10 +124,9 @@ func (authService *AuthService) SignIn(c *fiber.Ctx, req *types.SignInRequest) e
 	err := authService.validator.Struct(req)
 	if err != nil {
 		validateionErrors := helpers.FormateValidationError(err)
-		log.Printf("Validation errors: %v", validateionErrors)
 
 		if len(validateionErrors) > utils.NumbeZero {
-			return c.Status(fiber.StatusBadRequest).JSON(validateionErrors) 
+			return c.Status(fiber.StatusNotFound).JSON(validateionErrors)
 		}
 	}
 
@@ -149,14 +147,14 @@ func (authService *AuthService) SignIn(c *fiber.Ctx, req *types.SignInRequest) e
 	if !verifyPassword(req.Password, user.Password) {
 		log.Println("Invalid email or password")
 		response.Message = "Invalid email or password"
-		return c.Status(fiber.StatusUnauthorized).JSON(response) 
+		return c.Status(fiber.StatusUnauthorized).JSON(response)
 	}
 
 	token, err := authService.generateToken(user)
 	if err != nil {
 		log.Printf("Error generating token: %v", err)
 		response.Message = err.Error()
-		return c.Status(fiber.StatusNotFound).JSON(response) 
+		return c.Status(fiber.StatusNotFound).JSON(response)
 
 	}
 	log.Printf("Token generated for user: %s", user.ID)
@@ -175,7 +173,7 @@ func (authService *AuthService) SignIn(c *fiber.Ctx, req *types.SignInRequest) e
 
 	response.Token = token
 	response.Success = true
-	response.Message = "Signed in successfully"
+	response.Message = "user signed in successfully"
 	c.Status(fiber.StatusOK).JSON(response) // nolint:errcheck
 	return nil
 }
@@ -189,7 +187,7 @@ func (authService *AuthService) SignOut(c *fiber.Ctx) error {
 			Success: false,
 			Message: "user not signed in",
 		}
-		return c.Status(fiber.StatusOK).JSON(response)
+		return c.Status(fiber.StatusUnauthorized).JSON(response)
 	}
 
 	c.ClearCookie(utils.CookieKeyToken)
