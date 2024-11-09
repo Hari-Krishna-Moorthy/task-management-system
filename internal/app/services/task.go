@@ -98,7 +98,7 @@ func (taskService *TaskService) CreateTask(c *fiber.Ctx, req *types.CreateTaskRe
 
 func (taskService *TaskService) UpdateTask(c *fiber.Ctx, req *types.UpdateTaskRequest) error {
 	log.Println("Update Task request received", req)
-	response := &types.CreateTaskResponse{
+	response := &types.GetTaskResponse{
 		Success: false,
 	}
 

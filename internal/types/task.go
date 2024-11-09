@@ -41,3 +41,9 @@ type ListTasksResponse struct {
 	Message string         `json:"message"`
 	Tasks   []*models.Task `json:"tasks"`
 }
+
+type GetTaskResponse struct {
+	Success bool         `json:"status"`
+	Message string       `json:"message"`
+	Task    *models.Task `json:"task"`
+}
