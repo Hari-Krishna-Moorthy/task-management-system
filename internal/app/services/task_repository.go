@@ -57,7 +57,7 @@ func (taskRepository *TaskRepository) UpdateTask(ctx context.Context, task *mode
 		update["title"] = task.Title
 	}
 	if task.Description != utils.EmptyString {
-		update["description"] = task.Title
+		update["description"] = task.Description
 	}
 
 	if task.Status != utils.NumbeZero {
@@ -76,6 +76,10 @@ func (taskRepository *TaskRepository) UpdateTask(ctx context.Context, task *mode
 
 	if err != nil {
 		return err
+	}
+
+	if updateOneResult.MatchedCount == 0 {
+		return mongo.ErrNoDocuments
 	}
 
 	log.Println("\nTask updated successfully : ", updateOneResult)
