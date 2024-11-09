@@ -4,10 +4,15 @@ import (
 	"context"
 	"log"
 	"testing"
+	"time"
 
 	"github.com/Hari-Krishna-Moorthy/task-management-system/config"
 	"github.com/Hari-Krishna-Moorthy/task-management-system/internal/app/migrations"
+	"github.com/Hari-Krishna-Moorthy/task-management-system/internal/app/models"
+	"github.com/Hari-Krishna-Moorthy/task-management-system/internal/app/utils"
 	"github.com/Hari-Krishna-Moorthy/task-management-system/internal/helpers"
+	"github.com/Hari-Krishna-Moorthy/task-management-system/internal/types"
+	"github.com/golang-jwt/jwt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -65,4 +70,31 @@ func TruncatesCollection() {
 	for _, collection := range collectionNames {
 		database.Collection(collection).DeleteMany(context.Background(), bson.M{}) //nolint:errcheck,nolintlint
 	}
+}
+
+func GenerateToken(user *models.User) (string, error) {
+	var jwtSecret = []byte(config.GetConfig().Auth.JWTSecret)
+
+	if len(jwtSecret) == 0 {
+		jwtSecret = []byte(utils.JWT_DEFAULT_SECRET)
+		log.Println("JWT secret not found in environment, using default")
+	}
+
+	log.Printf("Generating token for user: %s", user.ID)
+	claims := &types.JWTClaims{
+		UserID:    user.ID,
+		Username:  user.Username,
+		Email:     user.Email,
+		CreatedAt: time.Now().Unix(),
+		ExpireAt:  time.Now().Add(utils.JWT_TOKEN_EXPIRY).Unix(),
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	signedToken, err := token.SignedString(jwtSecret)
+	if err != nil {
+		log.Printf("Error signing token: %v", err)
+		return "", err
+	}
+	log.Println("Token generated successfully")
+	return signedToken, nil
 }
