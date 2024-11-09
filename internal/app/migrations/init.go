@@ -30,4 +30,9 @@ var MigrationList = []struct {
 		Description: "Add unique constraints on username, email, and id fields in users collection",
 		Apply:       addUniqueUserConstraints,
 	},
+	{
+		ID:          "2024_11_10_create_tasks_collection",
+		Description: "Create tasks collection with _id, title, description, completed, status, due_date, user_id, created_at, updated_at fields",
+		Apply:       createTasksCollection,
+	},
 }

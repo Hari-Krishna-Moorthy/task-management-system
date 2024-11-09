@@ -45,7 +45,7 @@ var (
 
 // LoadConfig reads the specified YAML config file based on the environment.
 func LoadConfig(env string) error {
-	filename := os.Getenv("CONFIG_FILE")
+	filename := "/Users/harikrishna/go/src/github.com/Hari-Krishna-Moorthy/task-management-system/config/config.test.yml"
 
 	if filename == "" {
 		filename = fmt.Sprintf("config/config.%s.yml", env)
