@@ -1,13 +1,12 @@
 package services
 
 import (
-	"github.com/Hari-Krishna-Moorthy/task-management-system/internal/app/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
 // HashPassword generates a bcrypt hash for the given password.
 func hashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), utils.Number14)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	return string(bytes), err
 }
 
