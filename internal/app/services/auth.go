@@ -97,6 +97,7 @@ func (authService *AuthService) SignUp(c *fiber.Ctx, req *types.SignUpRequest) e
 		return c.Status(fiber.StatusNotFound).JSON(response)
 	}
 	user := &models.User{
+		ID:       helpers.GenerateUUID(),
 		Username: req.Username,
 		Email:    req.Email,
 		Password: hashedPassword,
@@ -111,6 +112,7 @@ func (authService *AuthService) SignUp(c *fiber.Ctx, req *types.SignUpRequest) e
 	log.Printf("User %s created successfully", user.ID)
 
 	response.Success = true
+	// response.User = user
 	response.Message = "User registered successfully"
 
 	return c.Status(fiber.StatusCreated).JSON(response) // nolint:errcheck
