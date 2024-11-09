@@ -1,0 +1,17 @@
+database:
+  uri: "mongodb+srv://test_db_username:test_db_password@test_db_cluster/test_db_name?retryWrites=true&w=majority"
+  username: "test"
+  password: "password1234"
+  db_name: "task_management_test"
+  max_pool_size: 10
+  max_conn_idle_time: 300
+  retry_writes: true
+
+server:
+  port: 3001
+  environment: "test"
+  app_host: "127.0.0.1"
+  app_domain: "localhost"
+
+auth:
+  jwt_secret: "prod_jwt_secret_key"
