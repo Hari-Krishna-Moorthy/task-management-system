@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil" //nolint:staticcheck
 	"log"
+	"os"
 
 	"gopkg.in/yaml.v2"
 )
@@ -44,7 +45,12 @@ var (
 
 // LoadConfig reads the specified YAML config file based on the environment.
 func LoadConfig(env string) error {
-	filename := fmt.Sprintf("config/config.%s.yml", env)
+	filename := "/Users/harikrishna/go/src/github.com/Hari-Krishna-Moorthy/task-management-system/config/config.test.yml"
+
+	if filename == "" {
+		filename = fmt.Sprintf("config/config.%s.yml", env)
+	}
+
 	config = &Config{}
 
 	data, err := ioutil.ReadFile(filename)
@@ -63,5 +69,8 @@ func LoadConfig(env string) error {
 }
 
 func GetConfig() *Config {
+	if config == nil {
+		LoadConfig(os.Getenv("ENV")) // nolint:errcheck,nolintlint
+	}
 	return config
 }

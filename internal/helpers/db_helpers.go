@@ -17,14 +17,16 @@ import (
 func newMangoDBClient(ctx context.Context) (*mongo.Client, error) {
 
 	commandMonitor := &event.CommandMonitor{
-		Started: func(ctx context.Context, event *event.CommandStartedEvent) {
+		Started: func(_ context.Context, event *event.CommandStartedEvent) {
 			log.Printf(string(utils.BlueColor)+"\nMongoDB `Query Started`:\n%+v\n%v", event.Command, string(utils.ResetColor))
 		},
-		Succeeded: func(ctx context.Context, event *event.CommandSucceededEvent) {
-			log.Printf(string(utils.GreenColor)+"\nMongoDB Query Succeeded:\nCommand Name: %v\nDuration: %v\n%v", event.CommandName, event.Duration, string(utils.ResetColor))
+		Succeeded: func(_ context.Context, event *event.CommandSucceededEvent) {
+			log.Printf(string(utils.GreenColor)+"\nMongoDB Query Succeeded:\nCommand Name: %v\nDuration: %v\n%v",
+				event.CommandName, event.Duration, string(utils.ResetColor))
 		},
-		Failed: func(ctx context.Context, event *event.CommandFailedEvent) {
-			log.Printf(string(utils.RedColor)+"\nMongoDB Query Failed:\nCommand Name: %v\nDuration: %v\nFailure: %v\n%v", event.CommandName, event.Duration, event.Failure, string(utils.ResetColor))
+		Failed: func(_ context.Context, event *event.CommandFailedEvent) {
+			log.Printf(string(utils.RedColor)+"\nMongoDB Query Failed:\nCommand Name: %v\nDuration: %v\nFailure: %v\n%v",
+				event.CommandName, event.Duration, event.Failure, string(utils.ResetColor))
 		},
 	}
 

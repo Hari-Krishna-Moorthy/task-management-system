@@ -1,4 +1,4 @@
-package test_helpers
+package testhelpers
 
 import (
 	"context"
@@ -12,14 +12,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func init() {
-	config.LoadConfig("test") // nolint:errcheck
+func init() { //nolint:gochecknoinits
+	config.LoadConfig("test") // nolint:errcheck,nolintlint
 }
 
-var ()
-
 func initializesDB(t *testing.T) *mongo.Client {
-
 	client, err := helpers.GetClient(context.Background())
 	if err != nil {
 		t.Fatalf("Failed to connect to MongoDB: %v", err)
@@ -66,6 +63,6 @@ func TruncatesCollection() {
 	database := GetTestDatabase()
 	collectionNames := []string{"tasks", "users"}
 	for _, collection := range collectionNames {
-		database.Collection(collection).DeleteMany(context.Background(), bson.M{})
+		database.Collection(collection).DeleteMany(context.Background(), bson.M{}) //nolint:errcheck,nolintlint
 	}
 }
