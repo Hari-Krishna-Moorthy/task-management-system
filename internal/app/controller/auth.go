@@ -54,6 +54,5 @@ func (authController *AuthController) SignIn(c *fiber.Ctx) error {
 }
 
 func (authController *AuthController) SignOut(c *fiber.Ctx) error {
-
 	return authController.AuthService.SignOut(c)
 }
