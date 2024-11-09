@@ -1,11 +1,16 @@
 package utils
 
-import "time"
+import (
+	"time"
+)
 
 const (
 	NumbeZero = 0
 	Number14  = 14
 	Number72  = 72
+
+	TimeLayout  = "2006-01-02"
+	EmptyString = ""
 )
 
 const (
@@ -14,6 +19,8 @@ const (
 )
 
 const (
+	IdKey = "_id"
+	UserIDKey = "user_id"
 	Email           = "email"
 	Username        = "username"
 	CookieKeyToken  = "token"
@@ -28,3 +35,5 @@ const (
 	BlueColor  = "\033[34m"
 	ResetColor = "\033[0m"
 )
+
+var DeleteAtZeroTime = time.Time{}.UTC()
