@@ -7,9 +7,9 @@ import (
 
 // Auth request types
 type SignUpRequest struct {
-	Username string `json:"username" validate:"required" validateMsg:"Username is required"`
+	Username string `json:"username" validate:"required,min=3,max=30" validateMsg:"Username is required and must be between 3 and 30 characters"`
 	Email    string `json:"email" validate:"required,email" validateMsg:"Valid email is required"`
-	Password string `json:"password" validate:"required" validateMsg:"Password is required"`
+	Password string `json:"password" validate:"required,min=8,max=128" validateMsg:"Password is required and must be between 8 and 128 characters"`
 }
 
 type SignUpResponse struct {
@@ -19,9 +19,9 @@ type SignUpResponse struct {
 }
 
 type SignInRequest struct {
-	Email    string `json:"email" validate:"required_without=Username" validateMsg:"Email or Username is required"`
-	Username string `json:"username" validate:"required_without=Email" validateMsg:"Username or Email is required"`
-	Password string `json:"password" validate:"required" validateMsg:"Password is required"`
+	Email    string `json:"email" validate:"required_without=Username" validateMsg:"Email or Username is required, and must be a valid email"`
+	Username string `json:"username" validate:"required_without=Email" validateMsg:"Username or Email is required and must be between 3 and 30 characters"`
+	Password string `json:"password" validate:"required,min=8,max=128" validateMsg:"Password is required and must be between 8 and 128 characters"`
 }
 
 type SignInResponse struct {

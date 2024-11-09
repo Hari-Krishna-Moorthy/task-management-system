@@ -17,5 +17,14 @@ const (
 	Email           = "email"
 	Username        = "username"
 	CookieKeyToken  = "token"
+	DeletedAt       = "deleted_at"
 	MongoDBFilterOr = "$or"
+)
+
+// color codes
+const (
+	RedColor   = "\033[31m"
+	GreenColor = "\033[32m"
+	BlueColor  = "\033[34m"
+	ResetColor = "\033[0m"
 )

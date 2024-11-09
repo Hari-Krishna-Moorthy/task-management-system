@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/Hari-Krishna-Moorthy/task-management-system/config"
+	"github.com/Hari-Krishna-Moorthy/task-management-system/internal/app/utils"
+	"go.mongodb.org/mongo-driver/event"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readconcern"
@@ -13,19 +15,31 @@ import (
 )
 
 func newMangoDBClient(ctx context.Context) (*mongo.Client, error) {
+
+	commandMonitor := &event.CommandMonitor{
+		Started: func(ctx context.Context, event *event.CommandStartedEvent) {
+			log.Printf(string(utils.BlueColor)+"\nMongoDB `Query Started`:\n%+v\n%v", event.Command, string(utils.ResetColor))
+		},
+		Succeeded: func(ctx context.Context, event *event.CommandSucceededEvent) {
+			log.Printf(string(utils.GreenColor)+"\nMongoDB Query Succeeded:\nCommand Name: %v\nDuration: %v\n%v", event.CommandName, event.Duration, string(utils.ResetColor))
+		},
+		Failed: func(ctx context.Context, event *event.CommandFailedEvent) {
+			log.Printf(string(utils.RedColor)+"\nMongoDB Query Failed:\nCommand Name: %v\nDuration: %v\nFailure: %v\n%v", event.CommandName, event.Duration, event.Failure, string(utils.ResetColor))
+		},
+	}
+
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	clientOptions := options.Client().ApplyURI(config.GetConfig().Database.URI)
 	clientOptions.SetServerAPIOptions(serverAPI)
 	clientOptions.SetReadConcern(readconcern.Majority())
 	clientOptions.SetMaxPoolSize(config.GetConfig().Database.MaxPoolSize)
 	clientOptions.SetMaxConnIdleTime(time.Duration(config.GetConfig().Database.MaxConnIdleTime))
+	clientOptions.SetMonitor(commandMonitor)
 
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		return nil, err
 	}
-
-	log.Printf("Connected to MongoDB!")
 
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
