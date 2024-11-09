@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/Hari-Krishna-Moorthy/task-management-system/internal/app/services"
+	"github.com/Hari-Krishna-Moorthy/task-management-system/internal/types"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -33,21 +34,41 @@ func GetTaskController(taskService *services.TaskService) TaskControllerInterfac
 }
 
 func (t *TaskController) CreateTask(c *fiber.Ctx) error {
-	return nil
+	var req types.CreateTaskRequest
+
+	if err := c.BodyParser(&req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid request payload")
+	}
+
+	return t.TaskService.CreateTask(c, &req)
 }
 
 func (t *TaskController) UpdateTask(c *fiber.Ctx) error {
-	return nil
+	var req types.UpdateTaskRequest
+
+	if err := c.BodyParser(&req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid request payload")
+	}
+
+	return t.TaskService.UpdateTask(c, &req)
 }
 
 func (t *TaskController) GetTask(c *fiber.Ctx) error {
-	return nil
+
+	return t.TaskService.GetTask(c)
 }
 
 func (t *TaskController) DeleteTask(c *fiber.Ctx) error {
-	return nil
+
+	return t.TaskService.DeleteTask(c)
 }
 
 func (t *TaskController) ListTasks(c *fiber.Ctx) error {
-	return nil
+	var req types.ListTasksRequest
+
+	if err := c.BodyParser(&req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid request payload")
+	}
+
+	return t.TaskService.ListTasks(c, &req)
 }
