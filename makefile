@@ -18,7 +18,7 @@ setup:
 # Run tests using the test database configuration
 test: 
 	@echo "Running tests with test database..."
-	ENV=test $(GO_CMD) test ./internal/app/test/... -v
+	ENV=test $(GO_CMD) test ./internal/app/test/... 
 
 # Run tests and generate a coverage report
 test-report:
