@@ -20,15 +20,23 @@ type AuthRepository struct {
 	authCollections *mongo.Collection
 }
 
-var authRepository *AuthRepository
-
-func NewAuthRepository(database *mongo.Database) *AuthRepository {
-	return &AuthRepository{
-		authCollections: database.Collection((&models.User{}).GetCollectionsName()),
-	}
+type AuthRepositoryInterface interface {
+	FindUserByEmail(ctx context.Context, email string) (*models.User, error)
+	FindUserByUsername(ctx context.Context, username string) (*models.User, error)
+	FindUserByID(ctx context.Context, id string) (*models.User, error)
+	CreateUser(ctx context.Context, user *models.User) error
+	UpdateUser(ctx context.Context, user *models.User) error
+	DeleteUser(ctx context.Context, id string) error
 }
 
-func GetAuthRepository(database *mongo.Database) *AuthRepository {
+var authRepository AuthRepositoryInterface
+
+func NewAuthRepository(database *mongo.Database) AuthRepositoryInterface {
+	return &AuthRepository{
+		authCollections: database.Collection((&models.User{}).GetCollectionsName())}
+}
+
+func GetAuthRepository(database *mongo.Database) AuthRepositoryInterface {
 	if authRepository == nil {
 		authRepository = NewAuthRepository(database)
 	}
@@ -37,7 +45,7 @@ func GetAuthRepository(database *mongo.Database) *AuthRepository {
 
 func (authRepository *AuthRepository) FindUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	var user models.User
-	err := authRepository.authCollections.FindOne(ctx, bson.M{"email": email, utils.DeletedAt: nil}).Decode(&user)
+	err := authRepository.authCollections.FindOne(ctx, bson.M{"email": email, utils.DeletedAt: utils.DeleteAtZeroTime}).Decode(&user)
 	if err == mongo.ErrNoDocuments {
 		return nil, errUserNotFound
 	}
@@ -46,7 +54,7 @@ func (authRepository *AuthRepository) FindUserByEmail(ctx context.Context, email
 
 func (authRepository *AuthRepository) FindUserByUsername(ctx context.Context, username string) (*models.User, error) {
 	var user models.User
-	err := authRepository.authCollections.FindOne(ctx, bson.M{"username": username, utils.DeletedAt: nil}).Decode(&user)
+	err := authRepository.authCollections.FindOne(ctx, bson.M{"username": username, utils.DeletedAt: utils.DeleteAtZeroTime}).Decode(&user)
 	if err == mongo.ErrNoDocuments {
 		return nil, errUserNotFound
 	}
@@ -55,7 +63,7 @@ func (authRepository *AuthRepository) FindUserByUsername(ctx context.Context, us
 
 func (authRepository *AuthRepository) FindUserByID(ctx context.Context, id string) (*models.User, error) {
 	var user models.User
-	err := authRepository.authCollections.FindOne(ctx, bson.M{"_id": id, utils.DeletedAt: nil}).Decode(&user)
+	err := authRepository.authCollections.FindOne(ctx, bson.M{"_id": id, utils.DeletedAt: utils.DeleteAtZeroTime}).Decode(&user)
 	if err == mongo.ErrNoDocuments {
 		return nil, errUserNotFound
 	}
@@ -64,7 +72,7 @@ func (authRepository *AuthRepository) FindUserByID(ctx context.Context, id strin
 
 func (authRepository *AuthRepository) UpdateUser(ctx context.Context, user *models.User) error {
 	user.UpdatedAt = time.Now().UTC()
-	_, err := authRepository.authCollections.UpdateOne(ctx, bson.M{"_id": user.ID, utils.DeletedAt: nil}, bson.M{"$set": user})
+	_, err := authRepository.authCollections.UpdateOne(ctx, bson.M{"_id": user.ID, utils.DeletedAt: utils.DeleteAtZeroTime}, bson.M{"$set": user})
 	return err
 }
 

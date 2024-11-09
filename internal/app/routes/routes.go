@@ -8,5 +8,9 @@ func SetupRoutes(app *fiber.App) error {
 		return err
 	}
 
+	if err := setupTaskRoutes(app); err != nil {
+		return err
+	}
+
 	return nil
 }

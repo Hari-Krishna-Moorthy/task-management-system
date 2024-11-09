@@ -7,24 +7,26 @@ import (
 	"github.com/Hari-Krishna-Moorthy/task-management-system/internal/app/controller"
 	"github.com/Hari-Krishna-Moorthy/task-management-system/internal/app/services"
 	"github.com/Hari-Krishna-Moorthy/task-management-system/internal/helpers"
-
 	"github.com/gofiber/fiber/v2"
 )
 
-func setupAuthRoutes(app *fiber.App) error {
+func setupTaskRoutes(app *fiber.App) error {
 	database, err := helpers.GetDatabase(context.TODO())
 	if err != nil {
 		log.Printf("Error getting database: %v", err)
 		panic(err)
 	}
-	controller := controller.NewAuthController(
-		services.GetAuthService(context.Background(), database),
+
+	controller := controller.NewTaskController(
+		services.GetTaskService(services.GetTaskRepository(database)),
 	)
 
 	app.Group("/").
-		Post("/signup", controller.SignUp).
-		Post("/signin", controller.SignIn).
-		Post("/signout", controller.SignOut)
+		Get("/tasks", controller.ListTasks).
+		Get("/tasks/:id", controller.GetTask).
+		Post("/tasks", controller.CreateTask).
+		Put("/tasks/:id", controller.UpdateTask).
+		Delete("/tasks/:id", controller.DeleteTask)
 
 	return nil
 }

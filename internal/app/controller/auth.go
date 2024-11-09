@@ -9,28 +9,28 @@ import (
 )
 
 type AuthController struct {
-	AuthService *services.AuthService
-}
-
-var authController *AuthController
-
-func NewAuthController(authService *services.AuthService) *AuthController {
-	return &AuthController{
-		AuthService: authService,
-	}
-}
-
-func GetAuthController(authService *services.AuthService) *AuthController {
-	if authController == nil {
-		authController = NewAuthController(authService)
-	}
-	return authController
+	AuthService services.AuthServiceInterface
 }
 
 type AuthControllerInterface interface {
 	SignUp(c *fiber.Ctx) error
 	SignIn(c *fiber.Ctx) error
 	SignOut(c *fiber.Ctx) error
+}
+
+var authController AuthControllerInterface
+
+func NewAuthController(authService services.AuthServiceInterface) AuthControllerInterface {
+	return &AuthController{
+		AuthService: authService,
+	}
+}
+
+func GetAuthController(authService services.AuthServiceInterface) AuthControllerInterface {
+	if authController == nil {
+		authController = NewAuthController(authService)
+	}
+	return authController
 }
 
 func (authController *AuthController) SignUp(c *fiber.Ctx) error {
