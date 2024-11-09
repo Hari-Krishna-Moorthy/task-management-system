@@ -46,6 +46,12 @@ clean:
 	@echo "Cleaning up..."
 	@rm -f coverage.out coverage.html
 
+
+# Display lint errors
+lint:
+	@echo "Linting..."
+	golangci-lint run  
+
 # Display help
 help:
 	@echo "Makefile commands:"
