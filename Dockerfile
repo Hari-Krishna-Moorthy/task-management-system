@@ -43,6 +43,7 @@ RUN apk --no-cache add ca-certificates
 
 # Copy the compiled binary from the build stage
 COPY --from=builder /app/server .
+COPY --from=builder /app/config/* config/
 COPY --from=builder /app/.env .env
 
 # Change the ownership of the application files to the 'tms' user

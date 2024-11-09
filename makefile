@@ -30,7 +30,7 @@ test-report:
 # Run the application locally
 run:
 	@echo "Running the application locally..."
-	@$(GO_CMD) run cmd/server/main.go
+	@$(GO_CMD) run cmd/server/server.go
 
 # Build and run the application with Docker
 docker-build:

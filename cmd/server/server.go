@@ -23,7 +23,6 @@ func init() {
 		env = "prod"
 	}
 
-
 	// Load the appropriate configuration
 	err := config.LoadConfig(env)
 	if err != nil {
