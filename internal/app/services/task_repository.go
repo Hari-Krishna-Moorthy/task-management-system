@@ -15,15 +15,23 @@ type TaskRepository struct {
 	taskCollections *mongo.Collection
 }
 
-var taskRepository *TaskRepository
+type TaskRepositoryInterface interface {
+	CreateTask(ctx context.Context, task *models.Task) error
+	UpdateTask(ctx context.Context, task *models.Task) error
+	DeleteTask(ctx context.Context, id string, userID string) error
+	GetTask(ctx context.Context, id string, userID string) (*models.Task, error)
+	ListTasks(ctx context.Context, userID string) ([]*models.Task, error)
+}
 
-func NewTaskRepository(database *mongo.Database) *TaskRepository {
+var taskRepository TaskRepositoryInterface
+
+func NewTaskRepository(database *mongo.Database) TaskRepositoryInterface {
 	return &TaskRepository{
 		taskCollections: database.Collection((&models.Task{}).GetCollectionsName()),
 	}
 }
 
-func GetTaskRepository(database *mongo.Database) *TaskRepository {
+func GetTaskRepository(database *mongo.Database) TaskRepositoryInterface {
 	if taskRepository == nil {
 		taskRepository = NewTaskRepository(database)
 	}

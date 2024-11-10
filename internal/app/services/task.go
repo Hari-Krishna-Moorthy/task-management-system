@@ -16,7 +16,7 @@ import (
 )
 
 type TaskService struct {
-	taskRepository *TaskRepository
+	taskRepository TaskRepositoryInterface
 	validator      *validator.Validate
 }
 
@@ -28,16 +28,16 @@ type TaskServiceInterface interface {
 	ListTasks(c *fiber.Ctx, req *types.ListTasksRequest) error
 }
 
-var taskService *TaskService
+var taskService TaskServiceInterface
 
-func NewTaskService(taskRepository *TaskRepository) *TaskService {
+func NewTaskService(taskRepository TaskRepositoryInterface) TaskServiceInterface {
 	return &TaskService{
 		taskRepository: taskRepository,
 		validator:      validator.New(),
 	}
 }
 
-func GetTaskService(taskRepository *TaskRepository) *TaskService {
+func GetTaskService(taskRepository TaskRepositoryInterface) TaskServiceInterface {
 	if taskService == nil {
 		taskService = NewTaskService(taskRepository)
 	}

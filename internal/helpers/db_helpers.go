@@ -45,6 +45,7 @@ func newMangoDBClient(ctx context.Context) (*mongo.Client, error) {
 
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
+		log.Printf("Failed to connect to MongoDB: %w", err)
 		return nil, err
 	}
 	return client, nil

@@ -7,7 +7,7 @@ import (
 )
 
 type TaskController struct {
-	TaskService *services.TaskService
+	TaskService services.TaskServiceInterface
 }
 
 type TaskControllerInterface interface {
@@ -20,13 +20,13 @@ type TaskControllerInterface interface {
 
 var taskController TaskControllerInterface
 
-func NewTaskController(taskService *services.TaskService) TaskControllerInterface {
+func NewTaskController(taskService services.TaskServiceInterface) TaskControllerInterface {
 	return &TaskController{
 		TaskService: taskService,
 	}
 }
 
-func GetTaskController(taskService *services.TaskService) TaskControllerInterface {
+func GetTaskController(taskService services.TaskServiceInterface) TaskControllerInterface {
 	if taskController == nil {
 		taskController = NewTaskController(taskService)
 	}
